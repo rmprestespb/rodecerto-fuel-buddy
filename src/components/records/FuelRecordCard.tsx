@@ -45,9 +45,13 @@ export function FuelRecordCard({ record, onDelete }: FuelRecordCardProps) {
             )}
           </div>
           
-          <div className="flex items-center gap-1 text-sm text-muted-foreground mb-1">
-            <Calendar size={14} />
-            <span>{format(new Date(record.date), "dd 'de' MMM, yyyy", { locale: ptBR })}</span>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+            <div className="flex items-center gap-1">
+              <Calendar size={14} />
+              <span>{format(new Date(record.date), "dd 'de' MMM, yyyy", { locale: ptBR })}</span>
+            </div>
+            <span className="text-muted-foreground/50">•</span>
+            <span className="font-medium text-foreground">{record.odometer.toLocaleString('pt-BR')} km</span>
           </div>
 
           {record.station_name && (
