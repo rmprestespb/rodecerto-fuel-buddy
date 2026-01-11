@@ -52,7 +52,7 @@ export default function Auth() {
         className="w-full max-w-md"
       >
         <div className="flex justify-center mb-10">
-          <Logo size="2xl" showText={false} animate />
+          <Logo size="3xl" showText={false} animate />
         </div>
 
         <motion.div

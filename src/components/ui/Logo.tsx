@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import logoImage from '@/assets/logo-rodecerto.png';
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
   showText?: boolean;
   animate?: boolean;
 }
@@ -13,7 +13,8 @@ export function Logo({ size = 'md', showText = true, animate = false }: LogoProp
     md: { icon: 36, text: 'text-2xl' },
     lg: { icon: 48, text: 'text-4xl' },
     xl: { icon: 80, text: 'text-6xl' },
-    '2xl': { icon: 120, text: 'text-7xl' }
+    '2xl': { icon: 120, text: 'text-7xl' },
+    '3xl': { icon: 400, text: 'text-8xl' }
   };
 
   return (
