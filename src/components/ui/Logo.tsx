@@ -14,7 +14,7 @@ export function Logo({ size = 'md', showText = true, animate = false }: LogoProp
     lg: { icon: 48, text: 'text-4xl' },
     xl: { icon: 80, text: 'text-6xl' },
     '2xl': { icon: 100, text: 'text-7xl' },
-    '3xl': { icon: 120, text: 'text-8xl' }
+    '3xl': { icon: 160, text: 'text-8xl' }
   };
 
   return (
