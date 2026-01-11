@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import Upgrade from "./pages/Upgrade";
 import OilChanges from "./pages/OilChanges";
 import NewOilChange from "./pages/NewOilChange";
+import FuelCalculator from "./pages/FuelCalculator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/oil-changes" element={<OilChanges />} />
             <Route path="/new-oil-change" element={<NewOilChange />} />
+            <Route path="/calculator" element={<FuelCalculator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
