@@ -51,8 +51,8 @@ export default function Auth() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="flex justify-center mb-8">
-          <Logo size="xl" showText={false} animate />
+        <div className="flex justify-center mb-10">
+          <Logo size="2xl" showText={false} animate />
         </div>
 
         <motion.div
