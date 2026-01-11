@@ -24,11 +24,6 @@ export function Logo({ size = 'md', showText = true, animate = false }: LogoProp
         animate={animate ? { scale: [1, 1.05, 1] } : undefined}
         transition={animate ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : undefined}
       >
-        <motion.div
-          className="absolute inset-0 bg-primary/40 blur-lg rounded-full"
-          animate={animate ? { opacity: [0.3, 0.7, 0.3] } : { opacity: 0.3 }}
-          transition={animate ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : undefined}
-        />
         <img 
           src={logoImage} 
           alt="RodeCerto" 
