@@ -51,8 +51,12 @@ export default function Auth() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="flex justify-center mb-10">
+        <div className="flex flex-col items-center gap-3 mb-10">
           <Logo size="3xl" showText={false} animate />
+          <h1 className="text-4xl font-bold tracking-tight">
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent">Rode</span>
+            <span className="bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 bg-clip-text text-transparent">Certo</span>
+          </h1>
         </div>
 
         <motion.div
