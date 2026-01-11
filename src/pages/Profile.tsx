@@ -1,18 +1,20 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Crown, LogOut, Car, Fuel, Settings, ChevronRight } from 'lucide-react';
+import { User, Crown, LogOut, Car, Fuel, Droplets, ChevronRight } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useVehicles } from '@/hooks/useVehicles';
 import { useFuelRecords } from '@/hooks/useFuelRecords';
+import { useOilChanges } from '@/hooks/useOilChanges';
 
 export default function Profile() {
   const navigate = useNavigate();
   const { user, profile, signOut, loading: authLoading } = useAuth();
   const { vehicles } = useVehicles();
   const { records } = useFuelRecords();
+  const { oilChanges } = useOilChanges();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -28,6 +30,7 @@ export default function Profile() {
   const menuItems = [
     { icon: Car, label: 'Meus Veículos', path: '/vehicles', value: `${vehicles.length} veículo${vehicles.length !== 1 ? 's' : ''}` },
     { icon: Fuel, label: 'Abastecimentos', path: '/history', value: `${records.length} registro${records.length !== 1 ? 's' : ''}` },
+    { icon: Droplets, label: 'Troca de Óleo', path: '/oil-changes', value: `${oilChanges.length} troca${oilChanges.length !== 1 ? 's' : ''}`, highlight: profile?.is_pro },
     { icon: Crown, label: 'Plano Pro', path: '/upgrade', value: profile?.is_pro ? 'Ativo' : 'Fazer upgrade', highlight: !profile?.is_pro },
   ];
 

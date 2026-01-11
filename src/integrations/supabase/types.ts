@@ -107,6 +107,48 @@ export type Database = {
         }
         Relationships: []
       }
+      oil_changes: {
+        Row: {
+          city: string | null
+          created_at: string
+          date: string
+          establishment: string | null
+          id: string
+          notes: string | null
+          odometer: number
+          oil_type: string
+          updated_at: string
+          user_id: string
+          vehicle_id: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          date?: string
+          establishment?: string | null
+          id?: string
+          notes?: string | null
+          odometer: number
+          oil_type: string
+          updated_at?: string
+          user_id: string
+          vehicle_id: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          date?: string
+          establishment?: string | null
+          id?: string
+          notes?: string | null
+          odometer?: number
+          oil_type?: string
+          updated_at?: string
+          user_id?: string
+          vehicle_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
