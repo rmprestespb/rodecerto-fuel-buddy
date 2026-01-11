@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Fuel, TrendingUp, Wallet, Plus, Crown, AlertCircle } from 'lucide-react';
+import { Fuel, TrendingUp, Wallet, Plus, Crown, AlertCircle, Droplets, AlertTriangle, Clock } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { VehicleSelector } from '@/components/dashboard/VehicleSelector';
@@ -11,6 +11,7 @@ import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '@/contexts/AuthContext';
 import { useVehicles } from '@/hooks/useVehicles';
 import { useFuelRecords } from '@/hooks/useFuelRecords';
+import { useOilChanges } from '@/hooks/useOilChanges';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Dashboard() {
@@ -18,8 +19,14 @@ export default function Dashboard() {
   const { user, profile, loading: authLoading } = useAuth();
   const { vehicles, selectedVehicle, setSelectedVehicle, loading: vehiclesLoading, canAddVehicle } = useVehicles();
   const { records, loading: recordsLoading, getStats, deleteRecord } = useFuelRecords(selectedVehicle?.id);
+  const { getOilChangeStatus, getLatestOilChange } = useOilChanges(selectedVehicle?.id);
   
   const stats = getStats();
+  
+  // Get latest odometer from fuel records for oil change status
+  const latestOdometer = records.length > 0 ? Number(records[0].odometer) : 0;
+  const oilStatus = getOilChangeStatus(latestOdometer, selectedVehicle?.id);
+  const latestOilChange = getLatestOilChange(selectedVehicle?.id);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -82,7 +89,44 @@ export default function Dashboard() {
           </motion.div>
         )}
 
-        {/* Stats Grid */}
+        {/* Oil Change Alert */}
+        {selectedVehicle && oilStatus && (oilStatus.status === 'warning' || oilStatus.status === 'overdue') && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`p-4 rounded-2xl border-l-4 cursor-pointer transition-all hover:scale-[1.02] ${
+              oilStatus.status === 'overdue' 
+                ? 'border-l-destructive bg-destructive/10 border-destructive/30' 
+                : 'border-l-amber-500 bg-amber-500/10 border-amber-500/30'
+            }`}
+            onClick={() => navigate('/oil-changes')}
+          >
+            <div className="flex items-center gap-3">
+              {oilStatus.status === 'overdue' ? (
+                <div className="p-2 rounded-xl bg-destructive/20">
+                  <AlertTriangle size={20} className="text-destructive" />
+                </div>
+              ) : (
+                <div className="p-2 rounded-xl bg-amber-500/20">
+                  <Clock size={20} className="text-amber-500" />
+                </div>
+              )}
+              <div className="flex-1">
+                <p className={`font-semibold ${oilStatus.status === 'overdue' ? 'text-destructive' : 'text-amber-500'}`}>
+                  {oilStatus.status === 'overdue' ? 'Troca de óleo atrasada!' : 'Troca de óleo próxima'}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {oilStatus.status === 'overdue' 
+                    ? `Deveria trocar em ${oilStatus.nextKm.toLocaleString('pt-BR')} km`
+                    : `Faltam ${oilStatus.remainingKm.toLocaleString('pt-BR')} km para a próxima troca`
+                  }
+                </p>
+              </div>
+              <Droplets size={18} className={oilStatus.status === 'overdue' ? 'text-destructive' : 'text-amber-500'} />
+            </div>
+          </motion.div>
+        )}
+
         {selectedVehicle && (
           <div className="grid grid-cols-2 gap-4">
             <StatCard
