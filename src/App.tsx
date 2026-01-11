@@ -14,6 +14,8 @@ import Vehicles from "./pages/Vehicles";
 import Map from "./pages/Map";
 import Profile from "./pages/Profile";
 import Upgrade from "./pages/Upgrade";
+import OilChanges from "./pages/OilChanges";
+import NewOilChange from "./pages/NewOilChange";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +37,8 @@ const App = () => (
             <Route path="/map" element={<Map />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/upgrade" element={<Upgrade />} />
+            <Route path="/oil-changes" element={<OilChanges />} />
+            <Route path="/new-oil-change" element={<NewOilChange />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
