@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Crown, LogOut, Car, Fuel, Droplets, Calculator, ChevronRight } from 'lucide-react';
+import { Crown, LogOut, Car, Fuel, Droplets, Calculator, ChevronRight } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useVehicles } from '@/hooks/useVehicles';
 import { useFuelRecords } from '@/hooks/useFuelRecords';
 import { useOilChanges } from '@/hooks/useOilChanges';
+import { AvatarUpload } from '@/components/profile/AvatarUpload';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -44,9 +45,7 @@ export default function Profile() {
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-4"
         >
-          <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center glow-primary">
-            <User size={32} className="text-primary-foreground" />
-          </div>
+          <AvatarUpload />
           <div className="flex-1">
             <h2 className="text-lg font-bold">
               {profile?.full_name || 'Usuário'}
