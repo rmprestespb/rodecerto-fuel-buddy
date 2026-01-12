@@ -146,6 +146,82 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Quick Actions - Km Rodado e Troca de Óleo */}
+        {selectedVehicle && (
+          <div className="grid grid-cols-2 gap-4">
+            {/* Km Rodado */}
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/new-record')}
+              className="p-4 rounded-2xl bg-card border border-border cursor-pointer transition-all hover:border-primary/50"
+            >
+              <div className="flex flex-col items-center text-center gap-3">
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <TrendingUp size={24} className="text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground">Km Rodado</p>
+                  <p className="text-xs text-muted-foreground">
+                    {latestOdometer > 0 ? `${latestOdometer.toLocaleString('pt-BR')} km` : 'Registrar km'}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Troca de Óleo */}
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/oil-changes')}
+              className={`p-4 rounded-2xl bg-card border cursor-pointer transition-all ${
+                oilStatus?.status === 'overdue' 
+                  ? 'border-destructive/50 hover:border-destructive' 
+                  : oilStatus?.status === 'warning'
+                  ? 'border-amber-500/50 hover:border-amber-500'
+                  : 'border-border hover:border-secondary/50'
+              }`}
+            >
+              <div className="flex flex-col items-center text-center gap-3">
+                <div className={`p-3 rounded-xl ${
+                  oilStatus?.status === 'overdue' 
+                    ? 'bg-destructive/10' 
+                    : oilStatus?.status === 'warning'
+                    ? 'bg-amber-500/10'
+                    : 'bg-secondary/10'
+                }`}>
+                  <Droplets size={24} className={
+                    oilStatus?.status === 'overdue' 
+                      ? 'text-destructive' 
+                      : oilStatus?.status === 'warning'
+                      ? 'text-amber-500'
+                      : 'text-secondary'
+                  } />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground">Troca de Óleo</p>
+                  <p className={`text-xs ${
+                    oilStatus?.status === 'overdue' 
+                      ? 'text-destructive' 
+                      : oilStatus?.status === 'warning'
+                      ? 'text-amber-500'
+                      : 'text-muted-foreground'
+                  }`}>
+                    {oilStatus 
+                      ? oilStatus.status === 'overdue' 
+                        ? 'Atrasada!' 
+                        : oilStatus.status === 'warning'
+                        ? `Faltam ${oilStatus.remainingKm.toLocaleString('pt-BR')} km`
+                        : `Próx: ${oilStatus.nextKm.toLocaleString('pt-BR')} km`
+                      : 'Registrar troca'
+                    }
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         {/* Quick Action */}
         {selectedVehicle && (
           <motion.div
