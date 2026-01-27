@@ -85,13 +85,13 @@ export default function Vehicles() {
         toast.error('Erro ao atualizar veículo');
       }
     } else {
-      const vehicle = await addVehicle(vehicleData);
-      if (vehicle) {
+      const result = await addVehicle(vehicleData);
+      if (result.error) {
+        toast.error('Erro ao adicionar veículo', { description: result.error });
+      } else if (result.data) {
         toast.success('Veículo adicionado!');
         setDialogOpen(false);
         resetForm();
-      } else {
-        toast.error('Erro ao adicionar veículo');
       }
     }
 

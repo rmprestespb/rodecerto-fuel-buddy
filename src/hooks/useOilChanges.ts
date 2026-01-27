@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { oilChangeSchema, formatValidationError, type OilChangeInput } from '@/lib/validations';
 
 export interface OilChange {
   id: string;
@@ -63,25 +64,41 @@ export function useOilChanges(vehicleId?: string) {
 
   const addOilChange = async (
     oilChange: Omit<OilChange, 'id' | 'user_id' | 'created_at' | 'updated_at'>
-  ) => {
-    if (!user) return null;
+  ): Promise<{ data: OilChange | null; error: string | null }> => {
+    if (!user) return { data: null, error: 'Usuário não autenticado' };
+
+    // Validate input data
+    const validationResult = oilChangeSchema.safeParse(oilChange);
+    if (!validationResult.success) {
+      return { data: null, error: formatValidationError(validationResult.error) };
+    }
+
+    const validatedData = validationResult.data;
+
+    const insertData = {
+      vehicle_id: validatedData.vehicle_id,
+      date: validatedData.date,
+      odometer: validatedData.odometer,
+      oil_type: validatedData.oil_type,
+      establishment: validatedData.establishment ?? null,
+      city: validatedData.city ?? null,
+      notes: validatedData.notes ?? null,
+      user_id: user.id
+    };
 
     const { data, error } = await supabase
       .from('oil_changes')
-      .insert({
-        ...oilChange,
-        user_id: user.id,
-      })
+      .insert(insertData)
       .select()
       .single();
 
     if (error) {
       console.error('Error adding oil change:', error);
-      return null;
+      return { data: null, error: 'Erro ao salvar troca de óleo. Tente novamente.' };
     }
 
     await fetchOilChanges();
-    return data as OilChange;
+    return { data: data as OilChange, error: null };
   };
 
   const deleteOilChange = async (id: string) => {

@@ -104,18 +104,18 @@ export default function NewOilChange() {
 
     setIsSubmitting(false);
 
-    if (result) {
+    if (result.error) {
+      toast({
+        title: "Erro",
+        description: result.error,
+        variant: "destructive",
+      });
+    } else if (result.data) {
       toast({
         title: "Registro salvo!",
         description: "Troca de óleo registrada com sucesso.",
       });
       navigate('/oil-changes');
-    } else {
-      toast({
-        title: "Erro",
-        description: "Não foi possível salvar o registro.",
-        variant: "destructive",
-      });
     }
   };
 
