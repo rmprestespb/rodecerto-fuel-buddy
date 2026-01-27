@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { vehicleSchema, formatValidationError, type VehicleInput } from '@/lib/validations';
 
 export interface Vehicle {
   id: string;
@@ -48,22 +49,41 @@ export function useVehicles() {
     return vehicles.length < 1;
   };
 
-  const addVehicle = async (vehicle: Omit<Vehicle, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
-    if (!user || !canAddVehicle()) return null;
+  const addVehicle = async (vehicle: Omit<Vehicle, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<{ data: Vehicle | null; error: string | null }> => {
+    if (!user) return { data: null, error: 'Usuário não autenticado' };
+    if (!canAddVehicle()) return { data: null, error: 'Limite de veículos atingido. Faça upgrade para Pro.' };
+
+    // Validate input data
+    const validationResult = vehicleSchema.safeParse(vehicle);
+    if (!validationResult.success) {
+      return { data: null, error: formatValidationError(validationResult.error) };
+    }
+
+    const validatedData = validationResult.data;
+
+    const insertData = {
+      name: validatedData.name,
+      brand: validatedData.brand ?? null,
+      model: validatedData.model ?? null,
+      year: validatedData.year ?? null,
+      license_plate: validatedData.license_plate ?? null,
+      fuel_type: validatedData.fuel_type,
+      user_id: user.id
+    };
 
     const { data, error } = await supabase
       .from('vehicles')
-      .insert({ ...vehicle, user_id: user.id })
+      .insert(insertData)
       .select()
       .single();
 
     if (error) {
       console.error('Error adding vehicle:', error);
-      return null;
+      return { data: null, error: 'Erro ao salvar veículo. Tente novamente.' };
     }
 
     await fetchVehicles();
-    return data as Vehicle;
+    return { data: data as Vehicle, error: null };
   };
 
   const updateVehicle = async (id: string, updates: Partial<Vehicle>) => {

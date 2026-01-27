@@ -46,7 +46,7 @@ export default function NewRecord() {
 
     setLoading(true);
 
-    const record = await addRecord({
+    const result = await addRecord({
       vehicle_id: vehicleId,
       odometer: parseFloat(odometer),
       price_per_liter: parseFloat(pricePerLiter),
@@ -60,13 +60,13 @@ export default function NewRecord() {
       date: new Date(date).toISOString()
     });
 
-    if (record) {
+    if (result.error) {
+      toast.error('Erro ao registrar abastecimento', { description: result.error });
+    } else if (result.data) {
       toast.success('Abastecimento registrado!', {
-        description: record.km_per_liter ? `Consumo: ${record.km_per_liter} km/L` : undefined
+        description: result.data.km_per_liter ? `Consumo: ${result.data.km_per_liter} km/L` : undefined
       });
       navigate('/dashboard');
-    } else {
-      toast.error('Erro ao registrar abastecimento');
     }
 
     setLoading(false);

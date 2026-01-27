@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { fuelRecordSchema, formatValidationError, type FuelRecordInput } from '@/lib/validations';
 
 export interface FuelRecord {
   id: string;
@@ -53,8 +54,16 @@ export function useFuelRecords(vehicleId?: string) {
     setLoading(false);
   };
 
-  const addRecord = async (record: Omit<FuelRecord, 'id' | 'user_id' | 'created_at'>) => {
-    if (!user) return null;
+  const addRecord = async (record: Omit<FuelRecord, 'id' | 'user_id' | 'created_at'>): Promise<{ data: FuelRecord | null; error: string | null }> => {
+    if (!user) return { data: null, error: 'Usuário não autenticado' };
+
+    // Validate input data
+    const validationResult = fuelRecordSchema.safeParse(record);
+    if (!validationResult.success) {
+      return { data: null, error: formatValidationError(validationResult.error) };
+    }
+
+    const validatedData = validationResult.data;
 
     // Calculate km/liter if there's a previous record
     let kmPerLiter = null;
@@ -68,30 +77,41 @@ export function useFuelRecords(vehicleId?: string) {
         .maybeSingle();
 
       if (lastRecord) {
-        const distance = record.odometer - lastRecord.odometer;
-        if (distance > 0 && record.liters > 0) {
-          kmPerLiter = Number((distance / record.liters).toFixed(2));
+        const distance = validatedData.odometer - lastRecord.odometer;
+        if (distance > 0 && validatedData.liters > 0) {
+          kmPerLiter = Number((distance / validatedData.liters).toFixed(2));
         }
       }
     }
 
+    const insertData = {
+      vehicle_id: validatedData.vehicle_id,
+      station_id: validatedData.station_id ?? null,
+      station_name: validatedData.station_name ?? null,
+      odometer: validatedData.odometer,
+      price_per_liter: validatedData.price_per_liter,
+      liters: validatedData.liters,
+      total_cost: validatedData.total_cost,
+      fuel_type: validatedData.fuel_type,
+      notes: validatedData.notes ?? null,
+      date: validatedData.date,
+      user_id: user.id,
+      km_per_liter: kmPerLiter
+    };
+
     const { data, error } = await supabase
       .from('fuel_records')
-      .insert({
-        ...record,
-        user_id: user.id,
-        km_per_liter: kmPerLiter
-      })
+      .insert(insertData)
       .select()
       .single();
 
     if (error) {
       console.error('Error adding fuel record:', error);
-      return null;
+      return { data: null, error: 'Erro ao salvar registro. Tente novamente.' };
     }
 
     await fetchRecords();
-    return data as FuelRecord;
+    return { data: data as FuelRecord, error: null };
   };
 
   const deleteRecord = async (id: string) => {

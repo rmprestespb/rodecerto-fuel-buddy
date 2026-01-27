@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { getAuthErrorMessage } from '@/lib/validations';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -26,7 +27,9 @@ export default function Auth() {
     if (isLogin) {
       const { error } = await signIn(email, password);
       if (error) {
-        toast.error('Erro ao entrar', { description: error.message });
+        // Log error for debugging (server-side only in production)
+        console.error('Auth error:', error.message);
+        toast.error('Erro ao entrar', { description: getAuthErrorMessage(error) });
       } else {
         toast.success('Bem-vindo de volta!');
         navigate('/dashboard');
@@ -34,7 +37,9 @@ export default function Auth() {
     } else {
       const { error } = await signUp(email, password, fullName);
       if (error) {
-        toast.error('Erro ao criar conta', { description: error.message });
+        // Log error for debugging (server-side only in production)
+        console.error('Auth error:', error.message);
+        toast.error('Erro ao criar conta', { description: getAuthErrorMessage(error) });
       } else {
         toast.success('Conta criada com sucesso!');
         navigate('/dashboard');
