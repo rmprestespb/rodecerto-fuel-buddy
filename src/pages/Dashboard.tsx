@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Fuel, TrendingUp, Wallet, Plus, Crown, AlertCircle, Droplets, AlertTriangle, Clock } from 'lucide-react';
@@ -6,6 +6,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { VehicleSelector } from '@/components/dashboard/VehicleSelector';
 import { FuelRecordCard } from '@/components/records/FuelRecordCard';
+import { FuelSuggestions } from '@/components/dashboard/FuelSuggestions';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '@/contexts/AuthContext';
@@ -249,6 +250,11 @@ export default function Dashboard() {
               </Button>
             </div>
           </motion.div>
+        )}
+
+        {/* AI Fuel Suggestions */}
+        {selectedVehicle && (
+          <FuelSuggestions hasRecords={records.length >= 2} />
         )}
 
         {/* Recent Records */}
