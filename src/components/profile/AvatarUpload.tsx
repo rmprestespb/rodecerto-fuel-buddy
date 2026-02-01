@@ -64,7 +64,7 @@ export function AvatarUpload() {
       await refreshProfile();
       toast.success('Foto atualizada com sucesso!');
     } catch (error) {
-      console.error('Error uploading avatar:', error);
+      if (import.meta.env.DEV) console.error('Error uploading avatar:', error);
       toast.error('Erro ao enviar foto. Tente novamente.');
     } finally {
       setIsUploading(false);

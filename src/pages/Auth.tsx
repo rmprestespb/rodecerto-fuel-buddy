@@ -40,8 +40,7 @@ export default function Auth() {
     if (isLogin) {
       const { error } = await signIn(email, password);
       if (error) {
-        // Log error for debugging (server-side only in production)
-        console.error('Auth error:', error.message);
+        if (import.meta.env.DEV) console.error('Auth error:', error.message);
         toast.error('Erro ao entrar', { description: getAuthErrorMessage(error) });
       } else {
         toast.success('Bem-vindo de volta!');
@@ -50,8 +49,7 @@ export default function Auth() {
     } else {
       const { error } = await signUp(email, password, fullName);
       if (error) {
-        // Log error for debugging (server-side only in production)
-        console.error('Auth error:', error.message);
+        if (import.meta.env.DEV) console.error('Auth error:', error.message);
         toast.error('Erro ao criar conta', { description: getAuthErrorMessage(error) });
       } else {
         toast.success('Conta criada com sucesso!');
@@ -66,7 +64,7 @@ export default function Auth() {
     setGoogleLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
-      console.error('Google auth error:', error.message);
+      if (import.meta.env.DEV) console.error('Google auth error:', error.message);
       toast.error('Erro ao entrar com Google', { description: getAuthErrorMessage(error) });
       setGoogleLoading(false);
     }
