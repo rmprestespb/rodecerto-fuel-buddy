@@ -46,7 +46,7 @@ export function useFuelRecords(vehicleId?: string) {
     const { data, error } = await query;
 
     if (error) {
-      console.error('Error fetching fuel records:', error);
+      if (import.meta.env.DEV) console.error('Error fetching fuel records:', error);
       return;
     }
 
@@ -106,7 +106,7 @@ export function useFuelRecords(vehicleId?: string) {
       .single();
 
     if (error) {
-      console.error('Error adding fuel record:', error);
+      if (import.meta.env.DEV) console.error('Error adding fuel record:', error);
       return { data: null, error: 'Erro ao salvar registro. Tente novamente.' };
     }
 
@@ -121,7 +121,7 @@ export function useFuelRecords(vehicleId?: string) {
       .eq('id', id);
 
     if (error) {
-      console.error('Error deleting fuel record:', error);
+      if (import.meta.env.DEV) console.error('Error deleting fuel record:', error);
       return false;
     }
 

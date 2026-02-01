@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle();
 
     if (error) {
-      console.error('Error fetching profile:', error);
+      if (import.meta.env.DEV) console.error('Error fetching profile:', error);
       return null;
     }
     return data as Profile | null;

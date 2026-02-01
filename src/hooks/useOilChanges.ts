@@ -51,7 +51,7 @@ export function useOilChanges(vehicleId?: string) {
     const { data, error } = await query;
 
     if (error) {
-      console.error('Error fetching oil changes:', error);
+      if (import.meta.env.DEV) console.error('Error fetching oil changes:', error);
     } else {
       setOilChanges((data || []) as OilChange[]);
     }
@@ -93,7 +93,7 @@ export function useOilChanges(vehicleId?: string) {
       .single();
 
     if (error) {
-      console.error('Error adding oil change:', error);
+      if (import.meta.env.DEV) console.error('Error adding oil change:', error);
       return { data: null, error: 'Erro ao salvar troca de óleo. Tente novamente.' };
     }
 
@@ -108,7 +108,7 @@ export function useOilChanges(vehicleId?: string) {
       .eq('id', id);
 
     if (error) {
-      console.error('Error deleting oil change:', error);
+      if (import.meta.env.DEV) console.error('Error deleting oil change:', error);
       return false;
     }
 

@@ -32,7 +32,7 @@ export function useVehicles() {
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Error fetching vehicles:', error);
+      if (import.meta.env.DEV) console.error('Error fetching vehicles:', error);
       return;
     }
 
@@ -78,7 +78,7 @@ export function useVehicles() {
       .single();
 
     if (error) {
-      console.error('Error adding vehicle:', error);
+      if (import.meta.env.DEV) console.error('Error adding vehicle:', error);
       return { data: null, error: 'Erro ao salvar veículo. Tente novamente.' };
     }
 
@@ -86,19 +86,27 @@ export function useVehicles() {
     return { data: data as Vehicle, error: null };
   };
 
-  const updateVehicle = async (id: string, updates: Partial<Vehicle>) => {
+  const updateVehicle = async (id: string, updates: Partial<Omit<Vehicle, 'id' | 'user_id' | 'created_at' | 'updated_at'>>): Promise<{ success: boolean; error: string | null }> => {
+    // Validate partial updates using the same schema
+    const validationResult = vehicleSchema.partial().safeParse(updates);
+    if (!validationResult.success) {
+      return { success: false, error: formatValidationError(validationResult.error) };
+    }
+
+    const validatedData = validationResult.data;
+
     const { error } = await supabase
       .from('vehicles')
-      .update(updates)
+      .update(validatedData)
       .eq('id', id);
 
     if (error) {
-      console.error('Error updating vehicle:', error);
-      return false;
+      if (import.meta.env.DEV) console.error('Error updating vehicle:', error);
+      return { success: false, error: 'Erro ao atualizar veículo. Tente novamente.' };
     }
 
     await fetchVehicles();
-    return true;
+    return { success: true, error: null };
   };
 
   const deleteVehicle = async (id: string) => {
@@ -108,7 +116,7 @@ export function useVehicles() {
       .eq('id', id);
 
     if (error) {
-      console.error('Error deleting vehicle:', error);
+      if (import.meta.env.DEV) console.error('Error deleting vehicle:', error);
       return false;
     }
 
