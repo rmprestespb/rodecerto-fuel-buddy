@@ -17,6 +17,8 @@ import Upgrade from "./pages/Upgrade";
 import OilChanges from "./pages/OilChanges";
 import NewOilChange from "./pages/NewOilChange";
 import FuelCalculator from "./pages/FuelCalculator";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +43,8 @@ const App = () => (
             <Route path="/oil-changes" element={<OilChanges />} />
             <Route path="/new-oil-change" element={<NewOilChange />} />
             <Route path="/calculator" element={<FuelCalculator />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
